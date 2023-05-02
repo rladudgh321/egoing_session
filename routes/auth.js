@@ -5,16 +5,18 @@ var fs = require('fs');
 var sanitizeHtml = require('sanitize-html');
 var template = require('../lib/template.js');
 
-var authData = {
-  email: 'egoing777@gmail.com',
-  password: '111111',
-  nickname: 'egoing'
-}
+
 
 router.get('/login', function (request, response) {
+  const fmsg = request.flash();  
+  let feedback = '';
+  if(fmsg.error){
+    feedback = fmsg.error[0];
+  }
   var title = 'WEB - login';
   var list = template.list(request.list);
   var html = template.HTML(title, list, `
+    ${feedback}
     <form action="/auth/login_process" method="post">
       <p><input type="text" name="email" placeholder="email"></p>
       <p><input type="password" name="pwd" placeholder="password"></p>
@@ -25,7 +27,7 @@ router.get('/login', function (request, response) {
   `, '');
   response.send(html);
 });
-
+/*
 router.post('/login_process', function (request, response) {
   var post = request.body;
   var email = post.email;
@@ -40,7 +42,7 @@ router.post('/login_process', function (request, response) {
     response.send('Who?');
   }
 });
-
+*/
 router.get('/logout', function (request, response) {
   request.session.destroy(function(err){
     response.redirect('/');
